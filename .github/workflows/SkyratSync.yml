@@ -1,0 +1,35 @@
+on:
+    schedule:
+        - cron: '0 10 * * *'
+
+jobs:
+    fastforward:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Fork Sync2
+            uses: zwping/fork-sync@v1.6.5
+            with:
+                # Owner of the forked repository
+                owner: Skyrat-SS13
+                # Token for the github API
+                token: ${{ github.token }}
+                # Branch to track
+                head: master
+                # Branch to keep updated
+                base: Skyrat-master
+                # Merge method to use
+                merge_method: rebase
+                # The title of the pull request
+                pr_title: Fork Sync
+                # The message in the pull request
+                pr_message: ''
+                # Ignore Exceptions
+                ignore_fail: false
+                # Automatically approve pull request before merge
+                auto_approve: true
+                # Automatically merge the pull request
+                auto_merge: true
+                # Retry count
+                retries: 2
+                # Delay amount between retries
+                retry_after: 60
