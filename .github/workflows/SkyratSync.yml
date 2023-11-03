@@ -7,11 +7,12 @@ jobs:
     fastforward:
         runs-on: ubuntu-latest
         steps:
-          - name: Fork Sync2
-            uses: zwping/fork-sync@v1.6.5
+          - name: Fork Sync
+            uses: tgymnich/fork-sync@v1.2.1
             with:
                 # Owner of the forked repository
                 owner: Skyrat-SS13
+                repo: Skyrat-tg
                 # Token for the github API
                 token: ${{ github.token }}
                 # Branch to track
@@ -20,12 +21,6 @@ jobs:
                 base: Skyrat-master
                 # Merge method to use
                 merge_method: rebase
-                # The title of the pull request
-                pr_title: Fork Sync
-                # The message in the pull request
-                pr_message: ''
-                # Ignore Exceptions
-                ignore_fail: false
                 # Automatically approve pull request before merge
                 auto_approve: true
                 # Automatically merge the pull request
