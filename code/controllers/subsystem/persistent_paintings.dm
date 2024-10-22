@@ -1,14 +1,5 @@
 #define PAINTINGS_DATA_FORMAT_VERSION 3
 
-// Patronage thresholds for paintings. Different cosmetic frames become available as more credits are spent on the patronage.
-#define PATRONAGE_OK_FRAME (PAYCHECK_CREW * 3) // 150 credits, as of march 2022
-#define PATRONAGE_NICE_FRAME (PATRONAGE_OK_FRAME * 2.5)
-#define PATRONAGE_GREAT_FRAME (PATRONAGE_NICE_FRAME * 2)
-#define PATRONAGE_EXCELLENT_FRAME (PATRONAGE_GREAT_FRAME * 2)
-#define PATRONAGE_AMAZING_FRAME (PATRONAGE_EXCELLENT_FRAME * 2)
-#define PATRONAGE_SUPERB_FRAME (PATRONAGE_AMAZING_FRAME * 2)
-#define PATRONAGE_LEGENDARY_FRAME (PATRONAGE_SUPERB_FRAME * 2)
-
 /*
 {
 	"version":2
@@ -161,12 +152,14 @@ SUBSYSTEM_DEF(persistent_paintings)
 				"creator" = painting.creator_name,
 				"md5" = painting.md5,
 				"ref" = REF(painting),
+				"width" = painting.width,
+				"height" = painting.height,
 				"ratio" = painting.width/painting.height,
 			))
 
 		var/list/pdata = painting.to_json()
 		pdata["ref"] = REF(painting)
-		admin_painting_data += pdata
+		UNTYPED_LIST_ADD(admin_painting_data, pdata)
 
 /**
  * Generates painting data ready to be consumed by ui.
@@ -177,18 +170,26 @@ SUBSYSTEM_DEF(persistent_paintings)
  */
 /datum/controller/subsystem/persistent_paintings/proc/painting_ui_data(filter=NONE, admin=FALSE, search_text)
 	var/searching = filter & (PAINTINGS_FILTER_SEARCH_TITLE|PAINTINGS_FILTER_SEARCH_CREATOR) && search_text
-	for(var/datum/painting/painting as anything in paintings)
-		if(filter & PAINTINGS_FILTER_AI_PORTRAIT && ((painting.width != 24 && painting.width != 23) || (painting.height != 24 && painting.height != 23)))
+	var/list/paintings = admin ? admin_painting_data : cached_painting_data
+
+	if(!searching && !(filter & PAINTINGS_FILTER_AI_PORTRAIT))
+		return paintings
+
+	var/list/filtered_paintings = list()
+
+	for(var/painting in paintings)
+		if(filter & PAINTINGS_FILTER_AI_PORTRAIT && ((painting["width"] != 24 && painting["width"] != 23) || (painting["height"] != 24 && painting["height"] != 23)))
 			continue
 		if(searching)
 			var/haystack_text = ""
 			if(filter & PAINTINGS_FILTER_SEARCH_TITLE)
-				haystack_text = painting.title
+				haystack_text = painting["title"]
 			else if(filter & PAINTINGS_FILTER_SEARCH_CREATOR)
-				haystack_text = painting.creator_name
+				haystack_text = painting["creator"]
 			if(!findtext(haystack_text, search_text))
 				continue
-	return admin ? admin_painting_data : cached_painting_data
+		filtered_paintings += list(painting)
+	return filtered_paintings
 
 /// Returns paintings with given tag.
 /datum/controller/subsystem/persistent_paintings/proc/get_paintings_with_tag(tag_name)
@@ -324,11 +325,3 @@ SUBSYSTEM_DEF(persistent_paintings)
 	cache_paintings()
 
 #undef PAINTINGS_DATA_FORMAT_VERSION
-#undef PATRONAGE_OK_FRAME
-#undef PATRONAGE_NICE_FRAME
-#undef PATRONAGE_GREAT_FRAME
-#undef PATRONAGE_EXCELLENT_FRAME
-#undef PATRONAGE_AMAZING_FRAME
-#undef PATRONAGE_SUPERB_FRAME
-#undef PATRONAGE_LEGENDARY_FRAME
-

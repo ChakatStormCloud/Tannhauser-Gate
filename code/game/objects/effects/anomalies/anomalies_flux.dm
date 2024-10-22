@@ -2,7 +2,7 @@
 	name = "flux wave anomaly"
 	icon_state = "flux"
 	density = TRUE
-	aSignal = /obj/item/assembly/signaler/anomaly/flux
+	anomaly_core = /obj/item/assembly/signaler/anomaly/flux
 	var/canshock = FALSE
 	var/shockdamage = 20
 	var/explosive = FLUX_EXPLOSIVE
@@ -14,6 +14,7 @@
 		COMSIG_ATOM_ENTERED = PROC_REF(on_entered),
 	)
 	AddElement(/datum/element/connect_loc, loc_connections)
+	apply_wibbly_filters(src)
 
 /obj/effect/anomaly/flux/anomalyEffect()
 	..()
@@ -60,7 +61,7 @@
 ///Bigger, meaner, immortal flux anomaly
 /obj/effect/anomaly/flux/big
 	immortal = TRUE
-	aSignal = null
+	anomaly_core = null
 	shockdamage = 30
 
 	///range in whuich we zap

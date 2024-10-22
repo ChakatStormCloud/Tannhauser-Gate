@@ -1,5 +1,6 @@
 /obj/structure/spider/eggcluster
 	name = "egg cluster"
+	icon = 'icons/effects/effects.dmi'
 	desc = "There's something alive in there, and sooner or later it's going to find its way out."
 	icon_state = "eggs"
 	/// Mob spawner handling the actual spawn of the spider
@@ -107,7 +108,17 @@
 	amount_grown += rand(5, 15) * seconds_per_tick
 	if(amount_grown >= 100 && !ready)
 		ready = TRUE
-		notify_ghosts("[src] is ready to hatch!", null, enter_link = "<a href=?src=[REF(src)];activate=1>(Click to play)</a>", source = src, action = NOTIFY_ORBIT, ignore_key = POLL_IGNORE_SPIDER, flashwindow = flash_window)
+		var/notify_flags_to_pass = NOTIFY_CATEGORY_NOFLASH
+		if(flash_window)
+			notify_flags_to_pass &= GHOST_NOTIFY_FLASH_WINDOW
+		notify_ghosts(
+			"[src] is ready to hatch!",
+			source = src,
+			header = "Spider Infestation",
+			click_interact = TRUE,
+			ignore_key = POLL_IGNORE_SPIDER,
+			notify_flags = notify_flags_to_pass,
+		)
 		STOP_PROCESSING(SSobj, src)
 
 /obj/effect/mob_spawn/ghost_role/spider/Topic(href, href_list)
@@ -144,7 +155,7 @@
 	cluster_type = /obj/structure/spider/eggcluster/abnormal
 	potentialspawns = list(
 		/mob/living/basic/spider/growing/spiderling/tank,
-		/mob/living/basic/spider/growing/spiderling/breacher,
+		/mob/living/basic/spider/growing/spiderling/viper,
 	)
 	flash_window = TRUE
 
@@ -155,7 +166,7 @@
 	cluster_type = /obj/structure/spider/eggcluster/enriched
 	potentialspawns = list(
 		/mob/living/basic/spider/growing/spiderling/tarantula,
-		/mob/living/basic/spider/growing/spiderling/viper,
+		/mob/living/basic/spider/growing/spiderling/breacher,
 		/mob/living/basic/spider/growing/spiderling/midwife,
 	)
 	flash_window = TRUE
@@ -226,5 +237,5 @@
 		display_spiders[initial(spider.name)] = option
 	sort_list(display_spiders)
 
-	var/chosen_spider = show_radial_menu(user, egg, display_spiders, radius = 38)
+	var/chosen_spider = show_radial_menu(user, egg, display_spiders, radius = 38, require_near = TRUE)
 	return spider_list[chosen_spider]
