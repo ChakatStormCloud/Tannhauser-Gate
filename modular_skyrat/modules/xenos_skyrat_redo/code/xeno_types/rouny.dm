@@ -20,14 +20,10 @@
 /mob/living/carbon/alien/adult/skyrat/runner/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/tackler, stamina_cost = 0, base_knockdown = 2, range = 10, speed = 2, skill_mod = 7, min_distance = 0)
-	evade_ability = new /datum/action/cooldown/alien/skyrat/evade()
+	evade_ability = new(src)
 	evade_ability.Grant(src)
 
 	add_movespeed_modifier(/datum/movespeed_modifier/alien_quick)
-
-/mob/living/carbon/alien/adult/skyrat/runner/Destroy()
-	QDEL_NULL(evade_ability)
-	return ..()
 
 /mob/living/carbon/alien/adult/skyrat/runner/create_internal_organs()
 	organs += new /obj/item/organ/internal/alien/plasmavessel/small/tiny
@@ -73,7 +69,7 @@
 
 /// Handles if either BULLET_ACT_HIT or BULLET_ACT_FORCE_PIERCE happens to something using the xeno evade ability
 /datum/action/cooldown/alien/skyrat/evade/proc/on_projectile_hit()
-	if(owner.incapacitated(IGNORE_GRAB) || !isturf(owner.loc) || !evade_active)
+	if(!INCAPACITATED_IGNORING(owner, INCAPABLE_GRAB) || !isturf(owner.loc) || !evade_active)
 		return BULLET_ACT_HIT
 
 	owner.visible_message(span_danger("[owner] effortlessly dodges the projectile!"), span_userdanger("You dodge the projectile!"))
@@ -82,12 +78,12 @@
 	addtimer(CALLBACK(owner, TYPE_PROC_REF(/datum, remove_filter), RUNNER_BLUR_EFFECT), 0.5 SECONDS)
 	return BULLET_ACT_FORCE_PIERCE
 
-/mob/living/carbon/alien/adult/skyrat/runner/bullet_act(obj/projectile/P, def_zone, piercing_hit = FALSE)
+/mob/living/carbon/alien/adult/skyrat/runner/bullet_act(obj/projectile/hitting_projectile, def_zone, piercing_hit = FALSE)
 	if(evade_ability)
 		var/evade_result = evade_ability.on_projectile_hit()
 		if(!(evade_result == BULLET_ACT_HIT))
 			return evade_result
-	. = ..()
+	return ..()
 
 #undef EVASION_VENTCRAWL_INABILTY_CD_PERCENTAGE
 #undef RUNNER_BLUR_EFFECT

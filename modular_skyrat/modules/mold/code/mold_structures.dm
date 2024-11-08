@@ -131,7 +131,7 @@
 	icon = 'modular_skyrat/modules/mold/icons/blob_resin.dmi'
 	icon_state = "blob_floor"
 	density = FALSE
-	plane = FLOOR_PLANE
+	plane = GAME_PLANE
 	layer = LOW_SIGIL_LAYER
 	max_integrity = 50
 	var/blooming = FALSE
@@ -272,11 +272,11 @@
 	discharge()
 	. = ..()
 
-/obj/structure/mold/structure/bulb/bullet_act(obj/projectile/hit_projectile)
-	if(istype(hit_projectile, /obj/projectile/energy/nuclear_particle))
-		return ..()
-	discharge()
+/obj/structure/mold/structure/bulb/bullet_act(obj/projectile/hitting_projectile, def_zone, piercing_hit = FALSE)
 	. = ..()
+	if(istype(hitting_projectile, /obj/projectile/energy/nuclear_particle) || . != BULLET_ACT_HIT)
+		return
+	discharge()
 
 /obj/structure/mold/structure/bulb/Destroy()
 	if(mold_controller)
@@ -380,7 +380,13 @@
 
 /obj/structure/mold/structure/spawner/Initialize(mapload)
 	. = ..()
-	AddComponent(/datum/component/spawner, mold_type.mob_types, mold_type.spawn_cooldown, mold_type.max_spawns, list(FACTION_MOLD), "emerges from")
+	AddComponent(/datum/component/spawner, \
+		spawn_types = mold_type.mob_types, \
+		spawn_time = mold_type.spawn_cooldown, \
+		max_spawned = mold_type.max_spawns, \
+		faction = list(FACTION_MOLD), \
+		spawn_text = "emerges from", \
+	)
 
 #undef CORE_RETALIATION_COOLDOWN
 #undef MOLD_BULB_ALPHA

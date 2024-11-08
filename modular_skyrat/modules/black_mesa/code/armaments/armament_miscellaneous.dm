@@ -13,7 +13,7 @@
 	cost = 1
 
 /datum/armament_entry/hecu/misc/rollie
-	item_type = /obj/item/clothing/mask/cigarette/rollie/cannabis
+	item_type = /obj/item/cigarette/rollie/cannabis
 	max_purchase = 8
 	cost = 1
 
@@ -21,6 +21,11 @@
 	item_type = /obj/item/storage/box/hecu_rations
 	max_purchase = 6
 	cost = 1
+
+/datum/armament_entry/hecu/misc/pizza
+	item_type = /obj/item/pizzabox/random
+	max_purchase = 3
+	cost = 2
 
 /datum/armament_entry/hecu/misc/guitar
 	item_type = /obj/item/instrument/guitar

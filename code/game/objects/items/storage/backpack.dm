@@ -32,10 +32,6 @@
  * Backpack Types
  */
 
-/obj/item/storage/backpack/old/Initialize(mapload)
-	. = ..()
-	atom_storage.max_total_storage = 12
-
 /obj/item/bag_of_holding_inert
 	name = "inert bag of holding"
 	desc = "What is currently a just an unwieldly block of metal with a slot ready to accept a bluespace anomaly core."
@@ -51,9 +47,8 @@
 
 /obj/item/bag_of_holding_inert/Initialize(mapload)
 	. = ..()
-	AddComponent(/datum/component/slapcrafting,\
-		slapcraft_recipes = list(/datum/crafting_recipe/boh)\
-	)
+	var/static/list/recipes = list(/datum/crafting_recipe/boh)
+	AddElement(/datum/element/slapcrafting, recipes)
 
 /obj/item/storage/backpack/holding
 	name = "bag of holding"
@@ -102,7 +97,7 @@
 		return
 	if(HAS_MIND_TRAIT(user, TRAIT_CANNOT_OPEN_PRESENTS))
 		var/turf/floor = get_turf(src)
-		var/obj/item/thing = new /obj/item/a_gift/anything(floor)
+		var/obj/item/thing = new /obj/item/gift/anything(floor)
 		if(!atom_storage.attempt_insert(thing, user, override = TRUE, force = STORAGE_SOFT_LOCKED))
 			qdel(thing)
 
@@ -193,6 +188,12 @@
 	icon_state = "backpack-virology"
 	inhand_icon_state = "viropack"
 
+/obj/item/storage/backpack/floortile
+	name = "floortile backpack"
+	desc = "It's a backpack especially designed for use in floortiles..."
+	icon_state = "floortile_backpack"
+	inhand_icon_state = "backpack"
+
 /obj/item/storage/backpack/ert
 	name = "emergency response team commander backpack"
 	desc = "A spacious backpack with lots of pockets, worn by the Commander of an Emergency Response Team."
@@ -247,6 +248,7 @@
 	throwforce = 15
 	attack_verb_continuous = list("MEATS", "MEAT MEATS")
 	attack_verb_simple = list("MEAT", "MEAT MEAT")
+	custom_materials = list(/datum/material/meat = SHEET_MATERIAL_AMOUNT * 25) // MEAT
 	///Sounds used in the squeak component
 	var/list/meat_sounds = list('sound/effects/blobattack.ogg' = 1)
 	///Reagents added to the edible component, ingested when you EAT the MEAT
@@ -263,13 +265,26 @@
 
 /obj/item/storage/backpack/meat/Initialize(mapload)
 	. = ..()
-	AddComponent(/datum/component/edible,\
+	AddComponent(
+		/datum/component/edible,\
 		initial_reagents = meat_reagents,\
 		foodtypes = foodtypes,\
 		tastes = tastes,\
 		eatverbs = eatverbs,\
 	)
 	AddComponent(/datum/component/squeak, meat_sounds)
+	AddComponent(
+		/datum/component/blood_walk,\
+		blood_type = /obj/effect/decal/cleanable/blood,\
+		blood_spawn_chance = 15,\
+		max_blood = custom_materials[custom_materials[1]] / SHEET_MATERIAL_AMOUNT,\
+	)
+	AddComponent(
+		/datum/component/bloody_spreader,\
+		blood_left = custom_materials[custom_materials[1]] / SHEET_MATERIAL_AMOUNT,\
+		blood_dna = list("MEAT DNA" = "MT+"),\
+		diseases = null,\
+	)
 
 /*
  * Satchel Types
@@ -362,7 +377,7 @@
 
 /obj/item/storage/backpack/satchel/flat
 	name = "smuggler's satchel"
-	desc = "A very slim satchel that can easily fit into tight spaces."
+	desc = "A very slim satchel that can easily fit into tight spaces. Its contents cannot be detected by contraband scanners."
 	icon_state = "satchel-flat"
 	inhand_icon_state = "satchel-flat"
 	w_class = WEIGHT_CLASS_NORMAL //Can fit in backpacks itself.
@@ -371,7 +386,8 @@
 	. = ..()
 	AddElement(/datum/element/undertile, TRAIT_T_RAY_VISIBLE, INVISIBILITY_MAXIMUM, use_anchor = TRUE) // SKYRAT EDIT - Ghosts can't see smuggler's satchels
 	atom_storage.max_total_storage = 15
-	atom_storage.set_holdable(cant_hold_list = list(/obj/item/storage/backpack/satchel/flat)) //muh recursive backpacks)
+	atom_storage.set_holdable(cant_hold_list = /obj/item/storage/backpack/satchel/flat) //muh recursive backpacks
+	ADD_TRAIT(src, TRAIT_CONTRABAND_BLOCKER, INNATE_TRAIT)
 
 /obj/item/storage/backpack/satchel/flat/PopulateContents()
 	for(var/items in 1 to 4)
@@ -576,7 +592,7 @@
 	new /obj/item/surgicaldrill(src)
 	new /obj/item/cautery(src)
 	new /obj/item/surgical_drapes(src)
-	new /obj/item/clothing/suit/toggle/labcoat/skyrat/hospitalgown(src)	//SKYRAT EDIT ADDITION
+	new /obj/item/clothing/suit/toggle/labcoat/hospitalgown(src)	//SKYRAT EDIT ADDITION
 	new /obj/item/clothing/mask/surgical(src)
 	new /obj/item/blood_filter(src)
 

@@ -118,9 +118,15 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 	var/atom/movable/screen/stamina
 	var/atom/movable/screen/healthdoll
 	var/atom/movable/screen/spacesuit
+	var/atom/movable/screen/hunger
 	// subtypes can override this to force a specific UI style
 	var/ui_style
 	var/erp_ui_style //SKYRAT EDIT - ADDITION - ERP ICONS FIX
+
+	// List of weakrefs to objects that we add to our screen that we don't expect to DO anything
+	// They typically use * in their render target. They exist solely so we can reuse them,
+	// and avoid needing to make changes to all idk 300 consumers if we want to change the appearance
+	var/list/asset_refs_for_reuse = list()
 
 /datum/hud/New(mob/owner)
 	mymob = owner
@@ -154,6 +160,11 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 		plane_master_controllers[controller_instance.name] = controller_instance
 
 	owner.overlay_fullscreen("see_through_darkness", /atom/movable/screen/fullscreen/see_through_darkness)
+
+	// Register onto the global spacelight appearances
+	// So they can be render targeted by anything in the world
+	for(var/obj/starlight_appearance/starlight as anything in GLOB.starlight_objects)
+		register_reuse(starlight)
 
 	RegisterSignal(SSmapping, COMSIG_PLANE_OFFSET_INCREASE, PROC_REF(on_plane_increase))
 	RegisterSignal(mymob, COMSIG_MOB_LOGIN, PROC_REF(client_refresh))
@@ -199,7 +210,7 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 
 	for(var/group_key as anything in master_groups)
 		var/datum/plane_master_group/group = master_groups[group_key]
-		group.transform_lower_turfs(src, current_plane_offset)
+		group.build_planes_offset(src, current_plane_offset)
 
 /datum/hud/proc/should_use_scale()
 	return should_sight_scale(mymob.sight)
@@ -218,10 +229,9 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 	current_plane_offset = new_offset
 
 	SEND_SIGNAL(src, COMSIG_HUD_OFFSET_CHANGED, old_offset, new_offset)
-	if(should_use_scale())
-		for(var/group_key as anything in master_groups)
-			var/datum/plane_master_group/group = master_groups[group_key]
-			group.transform_lower_turfs(src, new_offset)
+	for(var/group_key as anything in master_groups)
+		var/datum/plane_master_group/group = master_groups[group_key]
+		group.build_planes_offset(src, new_offset)
 
 /datum/hud/Destroy()
 	if(mymob.hud_used == src)
@@ -254,14 +264,15 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 	stamina = null
 	healthdoll = null
 	spacesuit = null
+	hunger = null
 	blobpwrdisplay = null
 	alien_plasma_display = null
 	alien_queen_finder = null
 	combo_display = null
 
-	//SKYRAT EDIT START - SKYRAT HUD
+	//SKYRAT EDIT ADDITION START - SKYRAT HUD
 	wanted_lvl = null
-	// SKYRAT EDIT END - SKYRAT HUD
+	// SKYRAT EDIT ADDITION END - SKYRAT HUD
 
 	QDEL_LIST_ASSOC_VAL(master_groups)
 	QDEL_LIST_ASSOC_VAL(plane_master_controllers)
@@ -274,6 +285,8 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 
 /datum/hud/proc/on_plane_increase(datum/source, old_max_offset, new_max_offset)
 	SIGNAL_HANDLER
+	for(var/i in old_max_offset + 1 to new_max_offset)
+		register_reuse(GLOB.starlight_objects[i + 1])
 	build_plane_groups(old_max_offset + 1, new_max_offset)
 
 /// Creates the required plane masters to fill out new z layers (because each "level" of multiz gets its own plane master set)
@@ -402,6 +415,7 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 	reorganize_alerts(screenmob)
 	screenmob.reload_fullscreen()
 	update_parallax_pref(screenmob)
+	update_reuse(screenmob)
 
 	// ensure observers get an accurate and up-to-date view
 	if (!viewmob)
@@ -452,6 +466,22 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 
 	ui_style = new_ui_style
 	build_hand_slots()
+
+/datum/hud/proc/register_reuse(atom/movable/screen/reuse)
+	asset_refs_for_reuse += WEAKREF(reuse)
+	mymob?.client?.screen += reuse
+
+/datum/hud/proc/unregister_reuse(atom/movable/screen/reuse)
+	asset_refs_for_reuse -= WEAKREF(reuse)
+	mymob?.client?.screen -= reuse
+
+/datum/hud/proc/update_reuse(mob/show_to)
+	for(var/datum/weakref/screen_ref as anything in asset_refs_for_reuse)
+		var/atom/movable/screen/reuse = screen_ref.resolve()
+		if(isnull(reuse))
+			asset_refs_for_reuse -= screen_ref
+			continue
+		show_to.client?.screen += reuse
 
 //Triggered when F12 is pressed (Unless someone changed something in the DMF)
 /mob/verb/button_pressed_F12()
@@ -583,7 +613,7 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 	listed_actions.check_against_view()
 	palette_actions.check_against_view()
 	for(var/atom/movable/screen/movable/action_button/floating_button as anything in floating_actions)
-		var/list/current_offsets = screen_loc_to_offset(floating_button.screen_loc)
+		var/list/current_offsets = screen_loc_to_offset(floating_button.screen_loc, our_view)
 		// We set the view arg here, so the output will be properly hemm'd in by our new view
 		floating_button.screen_loc = offset_to_screen_loc(current_offsets[1], current_offsets[2], view = our_view)
 

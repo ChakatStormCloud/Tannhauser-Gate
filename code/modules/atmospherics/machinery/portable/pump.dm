@@ -1,4 +1,4 @@
-/obj/machinery/portable_atmospherics/pump //SKYRAT EDIT - ICON OVERRIDEN IN SCRUBBER.DM AESTHETICS
+/obj/machinery/portable_atmospherics/pump
 	name = "portable air pump"
 	icon_state = "siphon"
 	density = TRUE
@@ -12,7 +12,7 @@
 
 	volume = 1000
 
-/obj/machinery/portable_atmospherics/pump/Destroy()
+/obj/machinery/portable_atmospherics/pump/on_deconstruction(disassembled)
 	var/turf/local_turf = get_turf(src)
 	local_turf.assume_air(air_contents)
 	return ..()
@@ -109,7 +109,7 @@
 		data["holding"] = null
 	return data
 
-/obj/machinery/portable_atmospherics/pump/ui_act(action, params)
+/obj/machinery/portable_atmospherics/pump/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return

@@ -57,7 +57,7 @@
 #define COMSIG_GLOB_NEW_MACHINE "!new_machine"
 /// a client (re)connected, after all /client/New() checks have passed : (client/connected_client)
 #define COMSIG_GLOB_CLIENT_CONNECT "!client_connect"
-/// a weather event of some kind occured
+/// a weather event of some kind occurred
 #define COMSIG_WEATHER_TELEGRAPH(event_type) "!weather_telegraph [event_type]"
 #define COMSIG_WEATHER_START(event_type) "!weather_start [event_type]"
 #define COMSIG_WEATHER_WINDDOWN(event_type) "!weather_winddown [event_type]"
@@ -84,13 +84,25 @@
 /// (new_name, old_name)
 #define COMSIG_GLOB_STATION_NAME_CHANGED "!station_name_changed"
 
+/// Global signal sent before we decide what job everyone has
+#define COMSIG_GLOB_PRE_JOBS_ASSIGNED "!pre_roles_assigned"
+
 /// global signal when a global nullrod type is picked
 #define COMSIG_GLOB_NULLROD_PICKED "!nullrod_picked"
 
 /// Global signal when light debugging is canceled
 #define COMSIG_LIGHT_DEBUG_DISABLED "!light_debug_disabled"
 
+/// Global signal when starlight color is changed (old_star, new_star)
+#define COMSIG_STARLIGHT_COLOR_CHANGED "!starlight_color_changed"
+
 /// Global signal sent when a religious sect is chosen
 #define COMSIG_RELIGIOUS_SECT_CHANGED "!religious_sect_changed"
 /// Global signal sent when a religious sect is reset
 #define COMSIG_RELIGIOUS_SECT_RESET "!religious_sect_reset"
+
+/// Global signal sent when narsie summon count is updated: (new count)
+#define COMSIG_NARSIE_SUMMON_UPDATE "!narsie_summon_update"
+
+/// Global signal sent when a mob is spawned from a ghost in a dynamic ruleset (mob/spawned_mob)
+#define COMSIG_RULESET_BODY_GENERATED_FROM_GHOSTS "!ruleset_body_generated_from_ghosts"

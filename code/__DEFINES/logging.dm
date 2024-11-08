@@ -5,6 +5,9 @@
 /// Admins can still manually request a re-render
 #define LOG_UPDATE_TIMEOUT 5 SECONDS
 
+// The maximum number of entries allowed in the signaler investigate log, keep this relatively small to prevent performance issues when an admin tries to query it
+#define INVESTIGATE_SIGNALER_LOG_MAX_LENGTH 500
+
 //Investigate logging defines
 #define INVESTIGATE_ACCESSCHANGES "id_card_changes"
 #define INVESTIGATE_ATMOS "atmos"
@@ -47,6 +50,8 @@
 #define LOG_VICTIM (1 << 19)
 #define LOG_RADIO_EMOTE (1 << 20)
 #define LOG_SPEECH_INDICATORS (1 << 21)
+#define LOG_TRANSPORT (1 << 22)
+#define LOG_NTSL (1 << 23) // TANNHAUSER ADDITION -- NTSL (could be put into tannhauser NTSL defines, but here is safer)
 
 //Individual logging panel pages
 #define INDIVIDUAL_GAME_LOG (LOG_GAME)
@@ -55,8 +60,8 @@
 #define INDIVIDUAL_EMOTE_LOG (LOG_EMOTE | LOG_RADIO_EMOTE)
 #define INDIVIDUAL_COMMS_LOG (LOG_PDA | LOG_CHAT | LOG_COMMENT | LOG_TELECOMMS)
 #define INDIVIDUAL_OOC_LOG (LOG_OOC | LOG_ADMIN)
-#define INDIVIDUAL_OWNERSHIP_LOG (LOG_OWNERSHIP)
-#define INDIVIDUAL_SHOW_ALL_LOG (LOG_ATTACK | LOG_SAY | LOG_WHISPER | LOG_EMOTE | LOG_RADIO_EMOTE | LOG_DSAY | LOG_PDA | LOG_CHAT | LOG_COMMENT | LOG_TELECOMMS | LOG_OOC | LOG_ADMIN | LOG_OWNERSHIP | LOG_GAME | LOG_ADMIN_PRIVATE | LOG_ASAY | LOG_MECHA | LOG_VIRUS | LOG_SHUTTLE | LOG_ECON | LOG_VICTIM | LOG_SPEECH_INDICATORS)
+#define INDIVIDUAL_SHOW_ALL_LOG (LOG_ATTACK | LOG_SAY | LOG_WHISPER | LOG_EMOTE | LOG_RADIO_EMOTE | LOG_DSAY | LOG_PDA | LOG_CHAT | LOG_COMMENT | LOG_TELECOMMS | LOG_OOC | LOG_ADMIN | LOG_OWNERSHIP | LOG_GAME | LOG_ADMIN_PRIVATE | LOG_ASAY | LOG_MECHA | LOG_VIRUS | LOG_SHUTTLE | LOG_ECON | LOG_VICTIM | LOG_SPEECH_INDICATORS | LOG_NTSL)
+// TANNHAUSER ADDITION -- NTSL -- added LOG_NTSL in the upper line
 
 #define LOGSRC_CKEY "Ckey"
 #define LOGSRC_MOB "Mob"
@@ -83,8 +88,9 @@
 #define LOG_ENTRY_KEY_ID "id"
 #define LOG_ENTRY_KEY_SCHEMA_VERSION "s-ver"
 
-// Category for invalid/missing categories
-#define LOG_CATEGORY_NOT_FOUND "invalid-category"
+// Internal categories
+#define LOG_CATEGORY_INTERNAL_CATEGORY_NOT_FOUND "internal-category-not-found"
+#define LOG_CATEGORY_INTERNAL_ERROR "internal-error"
 
 // Misc categories
 #define LOG_CATEGORY_ATTACK "attack"
@@ -107,7 +113,9 @@
 #define LOG_CATEGORY_TARGET_ZONE_SWITCH "target-zone-switch"
 #define LOG_CATEGORY_TELECOMMS "telecomms"
 #define LOG_CATEGORY_TOOL "tool"
+#define LOG_CATEGORY_TRANSPORT "transport"
 #define LOG_CATEGORY_VIRUS "virus"
+#define LOG_CATEGORY_CAVE_GENERATION "cave-generation"
 
 // Admin categories
 #define LOG_CATEGORY_ADMIN "admin"
@@ -154,6 +162,7 @@
 #define LOG_CATEGORY_UPLINK_HERETIC "uplink-heretic"
 #define LOG_CATEGORY_UPLINK_MALF "uplink-malf"
 #define LOG_CATEGORY_UPLINK_SPELL "uplink-spell"
+#define LOG_CATEGORY_UPLINK_SPY "uplink-spy"
 
 // PDA categories
 #define LOG_CATEGORY_PDA "pda"

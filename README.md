@@ -3,15 +3,18 @@
 [![CI Suite](https://github.com/Sea-of-Lost-Souls/Tannhauser-Gate/actions/workflows/ci_suite.yml/badge.svg)](https://github.com/Sea-of-Lost-Souls/Tannhauser-Gate/actions/workflows/ci_suite.yml)
 
 [![resentment](.github/images/badges/built-with-resentment.svg)](.github/images/comics/131-bug-free.png) [![technical debt](.github/images/badges/contains-technical-debt.svg)](.github/images/comics/106-tech-debt-modified.png) [![forinfinityandbyond](.github/images/badges/made-in-byond.gif)](https://www.reddit.com/r/SS13/comments/5oplxp/what_is_the_main_problem_with_byond_as_an_engine/dclbu1a)
+[![resentment](.github/images/badges/built-with-resentment.svg)](.github/images/comics/131-bug-free.png) [![technical debt](.github/images/badges/contains-technical-debt.svg)](.github/images/comics/106-tech-debt-modified.png) [![forinfinityandbyond](.github/images/badges/made-in-byond.gif)](https://www.reddit.com/r/SS13/comments/5oplxp/what_is_the_main_problem_with_byond_as_an_engine/dclbu1a)
 
-* **Git / GitHub cheatsheet:** https://www.notion.so/Git-GitHub-61bc81766b2e4c7d9a346db3078ce833
-* **Guide to Modularisation:** [./modular_skyrat/readme.md](./modular_skyrat/readme.md)
-* **Website:** https://www.tgstation13.org
-* **Code:** https://github.com/Sea-of-Lost-Souls/Tannhauser-Gate
-* **Wiki:** https://tgstation13.org/wiki/Main_Page
-* **Codedocs:** https://sea-of-lost-souls.github.io/Tannhauser-Gate/
-* **Skyrat 13 Discord:** https://discord.com/invite/hGpZ4Z3
-* **Coderbus Discord:** https://discord.gg/Vh8TJp9
+| Website                   | Link                                           |
+|---------------------------|------------------------------------------------|
+| Git / GitHub cheatsheet   | [https://www.notion.so/Git-GitHub-61bc81766b2e4c7d9a346db3078ce833](https://www.notion.so/Git-GitHub-61bc81766b2e4c7d9a346db3078ce833) |
+| Guide to Modularization   | [./modular_skyrat/readme.md](./modular_skyrat/readme.md)            |
+| Website                   | [https://www.tgstation13.org](https://www.tgstation13.org)          |
+| Code                      | [https://github.com/Sea-of-Lost-Souls/Tannhauser-Gate](https://github.com/Sea-of-Lost-Souls/Tannhauser-Gate)    |
+| Wiki                      | [https://wiki.skyrat13.space/index.php/Main_Page](https://wiki.skyrat13.space/index.php/Main_Page)   |
+| Codedocs                  | [https://sea-of-lost-souls.github.io/Tannhauser-Gate/](https://sea-of-lost-souls.github.io/Tannhauser-Gate/)       |
+| Skyrat 13 Discord         | [https://discord.com/invite/hGpZ4Z3](https://discord.com/invite/hGpZ4Z3) |
+| Coderbus Discord          | [https://discord.gg/Vh8TJp9](https://discord.gg/Vh8TJp9)               |
 
 This is Sea of Lost Souls' downstream fork of Skyrat 13 created in byond.
 
@@ -24,30 +27,32 @@ Space Station 13 is a paranoia-laden round-based roleplaying game set against th
 You are responsible for the testing of your content and providing proof of such in your pull request. You should not mark a pull request ready for review until you have actually tested it. If you require a separate client for testing, you can use a guest account by logging out of BYOND and connecting to your test server. Test merges are not for bug finding, they are for stress tests where local testing simply doesn't allow for this.
 
 ## DEVELOPMENT FLOWCHART
+
 ![image](https://i.imgur.com/aJnE4WT.png)
 
 [Modularisation Guide](./modular_skyrat/readme.md)
 
 ## DOWNLOADING
+
 [Downloading](.github/guides/DOWNLOADING.md)
 
 [Running on the server](.github/guides/RUNNING_A_SERVER.md)
 
 [Maps and Away Missions](.github/guides/MAPS_AND_AWAY_MISSIONS.md)
+[Maps and Away Missions](.github/guides/MAPS_AND_AWAY_MISSIONS.md)
 
-## :exclamation: How to compile :exclamation:
-
-On **2021-01-04** we have changed the way to compile the codebase.
+## Compilation
 
 Find `BUILD.bat` here in the root folder of tgstation, and double click it to initiate the build. It consists of multiple steps and might take around 1-5 minutes to compile.
 
 **The long way**. Find `bin/build.cmd` in this folder, and double click it to initiate the build. It consists of multiple steps and might take around 1-5 minutes to compile. If it closes, it means it has finished its job. You can then [setup the server](.github/guides/RUNNING_A_SERVER.md) normally by opening `tgstation.dmb` in DreamDaemon.
 
-**Building tgstation in DreamMaker directly is now deprecated and might produce errors**, such as `'tgui.bundle.js': cannot find file`.
+**Building tgstation in DreamMaker directly is deprecated and might produce errors**, such as `'tgui.bundle.js': cannot find file`.
 
 **[How to compile in VSCode and other build options](tools/build/README.md).**
 
 ## Contributors
+
 [Guides for Contributors](.github/CONTRIBUTING.md)
 
 [/tg/station HACKMD account](https://hackmd.io/@tgstation) - Design documentation here
@@ -63,6 +68,7 @@ All code before [commit 333c566b88108de218d882840e61928a9b759d8f on 2014/31/12 a
 
 See LICENSE and GPLv3.txt for more details.
 
+The TGS DMAPI is licensed as a subproject under the MIT license.
 The TGS DMAPI is licensed as a subproject under the MIT license.
 
 See the footer of [code/__DEFINES/tgs.dm](./code/__DEFINES/tgs.dm) and [code/modules/tgs/LICENSE](./code/modules/tgs/LICENSE) for the MIT license.

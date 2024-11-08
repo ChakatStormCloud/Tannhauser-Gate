@@ -11,8 +11,14 @@
 
 #define isweakref(D) (istype(D, /datum/weakref))
 
+#define isimage(thing) (istype(thing, /image))
+
 GLOBAL_VAR_INIT(magic_appearance_detecting_image, new /image) // appearances are awful to detect safely, but this seems to be the best way ~ninjanomnom
-#define isappearance(thing) (!istype(thing, /image) && !ispath(thing) && istype(GLOB.magic_appearance_detecting_image, thing))
+#define isappearance(thing) (!isimage(thing) && !ispath(thing) && istype(GLOB.magic_appearance_detecting_image, thing))
+
+// The filters list has the same ref type id as a filter, but isnt one and also isnt a list, so we have to check if the thing has Cut() instead
+GLOBAL_VAR_INIT(refid_filter, TYPEID(filter(type="angular_blur")))
+#define isfilter(thing) (!hascall(thing, "Cut") && TYPEID(thing) == GLOB.refid_filter)
 
 #define isgenerator(A) (istype(A, /generator))
 
@@ -43,6 +49,8 @@ GLOBAL_LIST_INIT(turfs_openspace, typecacheof(list(
 
 #define isspaceturf(A) (istype(A, /turf/open/space))
 
+#define is_space_or_openspace(A) (isopenspaceturf(A) || isspaceturf(A))
+
 #define isfloorturf(A) (istype(A, /turf/open/floor))
 
 #define ismiscturf(A) (istype(A, /turf/open/misc))
@@ -61,11 +69,15 @@ GLOBAL_LIST_INIT(turfs_openspace, typecacheof(list(
 
 #define isplatingturf(A) (istype(A, /turf/open/floor/plating))
 
+#define iscatwalkturf(A) (istype(A, /turf/open/floor/catwalk_floor))
+
 #define isasteroidturf(A) (istype(A, /turf/open/misc/asteroid))
 
 #define istransparentturf(A) (HAS_TRAIT(A, TURF_Z_TRANSPARENT_TRAIT))
 
 #define iscliffturf(A) (istype(A, /turf/open/cliff))
+
+#define iswaterturf(A) (istype(A, /turf/open/water))
 
 GLOBAL_LIST_INIT(turfs_pass_meteor, typecacheof(list(
 	/turf/closed/mineral,
@@ -115,7 +127,7 @@ GLOBAL_LIST_INIT(turfs_pass_meteor, typecacheof(list(
 
 #define islarva(A) (istype(A, /mob/living/carbon/alien/larva))
 
-#define isalienadult(A) (istype(A, /mob/living/carbon/alien/adult) || istype(A, /mob/living/simple_animal/hostile/alien))
+#define isalienadult(A) (istype(A, /mob/living/carbon/alien/adult) || istype(A, /mob/living/basic/alien))
 
 #define isalienhunter(A) (istype(A, /mob/living/carbon/alien/adult/hunter))
 
@@ -127,19 +139,27 @@ GLOBAL_LIST_INIT(turfs_pass_meteor, typecacheof(list(
 
 //Silicon mobs
 #define issilicon(A) (istype(A, /mob/living/silicon))
-
-#define issiliconoradminghost(A) (istype(A, /mob/living/silicon) || isAdminGhostAI(A))
-
-#define iscyborg(A) (istype(A, /mob/living/silicon/robot))
-
 #define isAI(A) (istype(A, /mob/living/silicon/ai))
-
+#define iscyborg(A) (istype(A, /mob/living/silicon/robot))
 #define ispAI(A) (istype(A, /mob/living/silicon/pai))
+
+///This is used to see if you have Silicon access. This includes things like Admins, Drones, Bots, and Human wands.
+#define HAS_SILICON_ACCESS(possible_silicon) (HAS_TRAIT(possible_silicon, TRAIT_SILICON_ACCESS) || isAdminGhostAI(possible_silicon))
+///This is used to see if you have the access of an AI. This doesn't mean you are an AI, just have the same access as one.
+#define HAS_AI_ACCESS(possible_ai) (HAS_TRAIT(possible_ai, TRAIT_AI_ACCESS) || isAdminGhostAI(possible_ai))
 
 // basic mobs
 #define isbasicmob(A) (istype(A, /mob/living/basic))
 
+#define isconstruct(A) (istype(A, /mob/living/basic/construct))
+
 #define iscow(A) (istype(A, /mob/living/basic/cow))
+
+#define isgorilla(A) (istype(A, /mob/living/basic/gorilla))
+
+#define isshade(A) (istype(A, /mob/living/basic/shade))
+
+#define is_simian(A) (isgorilla(A) || ismonkey(A))
 
 /// returns whether or not the atom is either a basic mob OR simple animal
 #define isanimal_or_basicmob(A) (istype(A, /mob/living/simple_animal) || istype(A, /mob/living/basic))
@@ -149,25 +169,22 @@ GLOBAL_LIST_INIT(turfs_pass_meteor, typecacheof(list(
 
 #define ismining(A) (istype(A, /mob/living/simple_animal/hostile/asteroid) || istype(A, /mob/living/basic/mining))
 
-/// constructs, which are both simple and basic for now
-#define isconstruct(A) (istype(A, /mob/living/simple_animal/hostile/construct) || istype(A, /mob/living/basic/construct))
-
 //Simple animals
 #define isanimal(A) (istype(A, /mob/living/simple_animal))
 
 #define isrevenant(A) (istype(A, /mob/living/basic/revenant))
 
-#define isbot(A) (istype(A, /mob/living/simple_animal/bot))
+#define isbot(A) (istype(A, /mob/living/simple_animal/bot) || istype(A, /mob/living/basic/bot))
 
-#define isshade(A) (istype(A, /mob/living/simple_animal/shade))
+#define isbasicbot(A) (istype(A, /mob/living/basic/bot))
 
 #define ismouse(A) (istype(A, /mob/living/basic/mouse))
 
-#define isslime(A) (istype(A, /mob/living/simple_animal/slime))
+#define isslime(A) (istype(A, /mob/living/basic/slime))
 
-#define isdrone(A) (istype(A, /mob/living/simple_animal/drone))
+#define isdrone(A) (istype(A, /mob/living/basic/drone))
 
-#define iscat(A) (istype(A, /mob/living/simple_animal/pet/cat))
+#define iscat(A) (istype(A, /mob/living/basic/pet/cat))
 
 #define isdog(A) (istype(A, /mob/living/basic/pet/dog))
 
@@ -177,7 +194,7 @@ GLOBAL_LIST_INIT(turfs_pass_meteor, typecacheof(list(
 
 #define isregalrat(A) (istype(A, /mob/living/basic/regal_rat))
 
-#define isguardian(A) (istype(A, /mob/living/simple_animal/hostile/guardian))
+#define isguardian(A) (istype(A, /mob/living/basic/guardian))
 
 #define ismegafauna(A) (istype(A, /mob/living/simple_animal/hostile/megafauna))
 
@@ -214,6 +231,8 @@ GLOBAL_LIST_INIT(turfs_pass_meteor, typecacheof(list(
 
 #define islandmine(A) (istype(A, /obj/effect/mine))
 
+#define iscloset(A) (istype(A, /obj/structure/closet))
+
 #define issupplypod(A) (istype(A, /obj/structure/closet/supplypod))
 
 #define isammocasing(A) (istype(A, /obj/item/ammo_casing))
@@ -226,7 +245,7 @@ GLOBAL_LIST_INIT(turfs_pass_meteor, typecacheof(list(
 
 #define ismachinery(A) (istype(A, /obj/machinery))
 
-#define istramwall(A) (istype(A, /obj/structure/window/reinforced/tram/front))
+#define istramwall(A) (istype(A, /obj/structure/tram))
 
 #define isvendor(A) (istype(A, /obj/machinery/vending))
 
@@ -301,6 +320,7 @@ GLOBAL_LIST_INIT(book_types, typecacheof(list(
 #define is_captain_job(job_type) (istype(job_type, /datum/job/captain))
 #define is_chaplain_job(job_type) (istype(job_type, /datum/job/chaplain))
 #define is_clown_job(job_type) (istype(job_type, /datum/job/clown))
+#define is_mime_job(job_type) (istype(job_type, /datum/job/mime))
 #define is_detective_job(job_type) (istype(job_type, /datum/job/detective))
 #define is_scientist_job(job_type) (istype(job_type, /datum/job/scientist))
 #define is_security_officer_job(job_type) (istype(job_type, /datum/job/security_officer))

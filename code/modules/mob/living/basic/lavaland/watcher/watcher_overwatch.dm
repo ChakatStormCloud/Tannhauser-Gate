@@ -10,7 +10,6 @@
 	background_icon_state = "bg_demon"
 	overlay_icon_state = "bg_demon_border"
 	cooldown_time = 20 SECONDS
-	check_flags = AB_CHECK_CONSCIOUS | AB_CHECK_INCAPACITATED
 	click_to_activate = TRUE
 	shared_cooldown = NONE
 	/// Furthest range we can activate ability at
@@ -77,7 +76,7 @@
 		COMSIG_MOB_ITEM_ATTACK,
 		COMSIG_MOB_THROW,
 		COMSIG_MOB_USED_MECH_EQUIPMENT,
-		COMSIG_MOB_USED_MECH_MELEE,
+		COMSIG_MOB_USED_CLICK_MECH_MELEE,
 		COMSIG_MOVABLE_MOVED,
 	)
 

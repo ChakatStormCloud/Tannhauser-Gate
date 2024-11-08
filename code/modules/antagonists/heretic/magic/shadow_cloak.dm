@@ -28,7 +28,10 @@
 	return ..()
 
 /datum/action/cooldown/spell/shadow_cloak/is_valid_target(atom/cast_on)
-	return isliving(cast_on) && !HAS_TRAIT(cast_on, TRAIT_HULK) // Hulks are not stealthy. Need not apply
+	if(HAS_TRAIT(cast_on, TRAIT_HULK)) // Hulks are not stealthy. Need not apply
+		cast_on.balloon_alert(cast_on, "cannot cast while hulk!")
+		return FALSE
+	return isliving(cast_on)
 
 /datum/action/cooldown/spell/shadow_cloak/before_cast(mob/living/cast_on)
 	. = ..()
@@ -190,7 +193,7 @@
 		qdel(src)
 
 /// Signal proc for [COMSIG_MOB_APPLY_DAMAGE], being damaged past a threshold will roll a chance to stop the effect
-/datum/status_effect/shadow_cloak/proc/on_damaged(datum/source, damage, damagetype)
+/datum/status_effect/shadow_cloak/proc/on_damaged(datum/source, damage, damagetype, ...)
 	SIGNAL_HANDLER
 
 	// Stam damage is generally bursty, so we'll half it

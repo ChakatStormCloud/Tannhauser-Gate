@@ -193,6 +193,11 @@
 /// HUNTERS
 #define ACCESS_HUNTER "hunter"
 
+/// - - - MISC - - -
+	// These don't really fit anywhere else
+/// For things that aren't ever supposed to be accessed
+#define ACCESS_INACCESSIBLE "inaccessible"
+
 /// - - - END ACCESS IDS - - -
 
 /// A list of access levels that, when added to an ID card, will warn admins.
@@ -294,6 +299,7 @@
 	ACCESS_DETECTIVE, \
 	ACCESS_ENGINE_EQUIP, \
 	ACCESS_ENGINEERING, \
+	ACCESS_EVA, \
 	ACCESS_EXTERNAL_AIRLOCKS, \
 	ACCESS_GATEWAY, \
 	ACCESS_GENETICS, \
@@ -320,7 +326,6 @@
 	ACCESS_PHARMACY, \
 	ACCESS_PLUMBING, \
 	ACCESS_PSYCHOLOGY, \
-	ACCESS_QM, \
 	ACCESS_RESEARCH, \
 	ACCESS_ROBOTICS, \
 	ACCESS_SCIENCE, \
@@ -347,10 +352,11 @@
 	ACCESS_MINISAT, \
 	ACCESS_RC_ANNOUNCE, \
 	ACCESS_TCOMMS, \
+	ACCESS_TCOMMS_ADMIN, \
 	ACCESS_TECH_STORAGE, \
 	ACCESS_TELEPORTER, \
 	ACCESS_VAULT, \
-)
+) // TANNHAUSER ADDITION -- NTSL -- added: ACCESS_TCOMMS_ADMIN up there
 
 /// Private head of staff offices, usually only granted to most cards by trimming. Do not use direct, access via SSid_access.get_flag_access_list(ACCESS_FLAG_PRV_COMMAND)
 #define PRIVATE_COMMAND_ACCESS list( \
@@ -462,6 +468,7 @@
 #define REGION_RESEARCH "Research"
 /// Used to seed the accesses_by_region list in SSid_access. A list of all research regional accesses that are overseen by the RD.
 #define REGION_ACCESS_RESEARCH list( \
+	ACCESS_AI_UPLOAD, \
 	ACCESS_GENETICS, \
 	ACCESS_MECH_SCIENCE, \
 	ACCESS_MINISAT, \
@@ -489,8 +496,9 @@
 	ACCESS_MECH_ENGINE, \
 	ACCESS_MINISAT, \
 	ACCESS_TCOMMS, \
+	ACCESS_TCOMMS_ADMIN, \
 	ACCESS_TECH_STORAGE, \
-)
+) // TANNHAUSER ADDITION -- NTSL -- added: ACCESS_TCOMMS_ADMIN up there
 /// Name for the Supply region.
 #define REGION_SUPPLY "Supply"
 /// Used to seed the accesses_by_region list in SSid_access. A list of all cargo regional accesses that are overseen by the HoP.
@@ -538,7 +546,6 @@
 	/obj/item/modular_computer/pda/clown = list(REGION_GENERAL), \
 	/obj/item/modular_computer/pda/mime = list(REGION_GENERAL), \
 	/obj/item/modular_computer/pda/medical = list(REGION_MEDBAY), \
-	/obj/item/modular_computer/pda/viro = list(REGION_MEDBAY), \
 	/obj/item/modular_computer/pda/coroner = list(REGION_MEDBAY), \
 	/obj/item/modular_computer/pda/engineering = list(REGION_ENGINEERING), \
 	/obj/item/modular_computer/pda/security = list(REGION_SECURITY), \
